@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiencia Sensorial - Un Regalo para Ti</title>
+    <style>
+        :root {
+            --primary-color: #a29bfe;
+            --accent-color: #6c5ce7;
+            --bg-color: #f9f9fb;
+            --text-color: #2d3436;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        p.instruccion {
+            font-size: 1rem;
+            color: #636e72;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            max-width: 450px;
+            width: 100%;
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .numero-btn {
+            aspect-ratio: 1 / 1;
+            border: 2px solid var(--primary-color);
+            background: white;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .numero-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .numero-btn.usado {
+            background-color: #dfe6e9;
+            border-color: #b2bec3;
+            color: #b2bec3;
+            cursor: not-allowed;
+            transform: scale(0.95);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: auto;
+            padding: 40px;
+            border-radius: 25px;
+            max-width: 80%;
+            width: 400px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: aparecer 0.3s ease-out;
+        }
+
+        @keyframes aparecer {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .mensaje-texto {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: var(--text-color);
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+
+        .dulce-aviso {
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-cerrar {
+            margin-top: 20px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 0.8rem;
+            color: #b2bec3;
+        }
+
+        @media (max-width: 400px) {
+            .grid-container { grid-template-columns: repeat(4, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Experiencia Sensorial</h1>
+        <p class="instruccion">Elige un número, recibe tu dulce y una palabra para tu corazón.</p>
+    </header>
+
+    <div class="grid-container" id="grid">
+        </div>
+
+    <div id="miModal" class="modal">
+        <div class="modal-content">
+            <div class="mensaje-texto" id="mensaje"></div>
+            <div class="dulce-aviso">🍬 ¡Disfruta tu regalo físico!</div>
+            <button class="btn-cerrar" onclick="cerrarModal()">Recibir</button>
+        </div>
+    </div>
+
+    <footer>Creado con amor para tu bienestar espiritual</footer>
+
+    <script>
+        const mensajes = [
+            "Proverbios 31:30: La mujer que teme al Señor es digna de alabanza.",
+            "Cantares 4:7: Toda tú eres hermosa, amiga mía, y en ti no hay mancha.",
+            "Sofonías 3:17: El Señor se regocijará sobre ti con cánticos.",
+            "Isaías 43:4: Porque a mis ojos fuiste de gran estima, fuiste honorable, y yo te amé.",
+            "Jeremías 31:3: Con amor eterno te he amado.",
+            "Salmo 139:14: Eres una creación maravillosa.",
+            "1 Pedro 3:4: Tu belleza interna es de gran valor ante Dios.",
+            "Génesis 1:27: Creada a imagen de Dios.",
+            "Salmo 45:11: Prenderá el rey de tu hermosura.",
+            "Lucas 12:7: Vales más que muchos pajarillos.",
+            "Salmo 46:5: Dios está en medio de ella; no será conmovida.",
+            "Proverbios 31:25: Se reviste de fuerza y dignidad.",
+            "Salmo 91:4: Bajo sus alas estarás segura.",
+            "Isaías 41:10: No temas, porque yo estoy contigo.",
+            "Josué 1:9: Sé valiente, Dios está contigo.",
+            "Salmo 121:5: El Señor es tu guardador.",
+            "Éxodo 14:14: El Señor peleará por ti.",
+            "Deuteronomio 31:6: Él no te dejará ni te desamparará.",
+            "Salmo 18:2: El Señor es mi roca y mi libertador.",
+            "Proverbios 18:10: Torre fuerte es el nombre del Señor.",
+            "Mateo 11:28: Descanso para la mujer cansada.",
+            "Romanos 8:38-39: Nada te separará de su amor.",
+            "Salmo 34:5: Los que miran a Él no serán avergonzados.",
+            "2 Timoteo 1:7: Dios te dio espíritu de poder y amor.",
+            "Jeremías 29:11: Planes de bienestar y esperanza.",
+            "Filipenses 4:13: Todo lo puedes en Cristo.",
+            "Salmo 28:7: El Señor es mi fortaleza y mi escudo.",
+            "Mateo 28:20: Yo estoy con vosotros todos los días.",
+            "Salmo 37:4: Deléitate en el Señor y Él te concederá tus peticiones.",
+            "1 Corintios 15:58: Tu trabajo en el Señor no es en vano."
+        ];
+
+        const grid = document.getElementById('grid');
+        const modal = document.getElementById('miModal');
+        const mensajePantalla = document.getElementById('mensaje');
+
+        // Generar los 30 números
+        for (let i = 1; i <= 30; i++) {
+            let btn = document.createElement('button');
+            btn.className = 'numero-btn';
+            btn.innerText = i;
+            btn.onclick = function() { abrirMensaje(i - 1, btn); };
+            grid.appendChild(btn);
+        }
+
+        function abrirMensaje(index, elemento) {
+            if (elemento.classList.contains('usado')) return;
+            
+            mensajePantalla.innerText = mensajes[index];
+            modal.style.display = "flex";
+            elemento.classList.add('usado');
+        }
+
+        function cerrarModal() {
+            modal.style.display = "none";
+        }
+
+        // Cerrar si hacen clic fuera del cuadro blanco
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                cerrarModal();
+            }
+        }
+    </script>
+</body>
+</html>
